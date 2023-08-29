@@ -53,6 +53,7 @@ phases:
 artifacts:
   files: build.json
 
+# Project rubric: Add environment variable
 env:
   parameter-store:         
     JWT_SECRET: JWT_SECRET
