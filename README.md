@@ -89,7 +89,7 @@ For more detail about each of these steps, see the project lesson.
 
 ## Prerequisites
 1.  Attach policy to IAM role
-      command: $  aws iam put-role-policy --role-name eksDeploymentRole --policy-name eks-describe --policy-document file://iam-role-policy.json
+      command: $  aws iam put-role-policy --role-name projectCodeBuildRole --policy-name eks-describe --policy-document file://iam-role-policy.json
 2.  Check Authorization
       command: $  kubectl get -n kube-system configmap/aws-auth -o yaml > /tmp/aws-auth-patch.yml
       Open in VS Code:
