@@ -86,3 +86,47 @@ Completing the project involves several steps:
 6. Create a CodeBuild stage which will build, test, and deploy your code
 
 For more detail about each of these steps, see the project lesson.
+
+## Prerequisites
+1.  Attach policy to IAM role
+      command: $  aws iam put-role-policy --role-name eksDeploymentRole --policy-name eks-describe --policy-document file://iam-role-policy.json
+2.  Check Authorization
+      command: $  kubectl get -n kube-system configmap/aws-auth -o yaml > /tmp/aws-auth-patch.yml
+      Open in VS Code:
+        command: $  code /System/Volumes/Data/private/tmp/aws-auth-patch.yml
+        Result shall include:
+          rolearn: arn:aws:iam::<ACCOUNT ID>:role/eksctl-projectDeployEKS-nodegroup-NodeInstanceRole-1LQA157O81MN2 
+3.  Save JWTsecret in AWS
+      command: $  aws ssm put-parameter --name JWT_SECRET --overwrite --value "myjwtsecret" --type SecureString
+      Verify command: aws ssm get-parameter --name JWT_SECRET
+
+## Launch
+1. Create an EKS Cluster
+      command: $  eksctl create cluster --name projectDeployEKS --nodes=2 --version=1.27 --instance-types=t2.micro --region=us-east-2
+2. Create a stack
+      command: $  aws cloudformation create-stack  --stack-name deployEksCodeBuild --region us-east-1 --template-body file://ci-cd-codepipeline.cfn.yml --parameters ParameterKey=GitHubToken,ParameterValue=<YOUR_GITHUB_TOKEN>
+
+
+2. Health Check
+    Check createed Cluster
+      command: $  eksctl get cluster --name=projectDeployEKS --region=us-east-2 
+      alternative command: $  eksctl utils describe-stacks --region=us-east-2 --cluster=projectDeployEKS 
+    Check created stacks
+      cmmand: $  aws cloudformation list-stacks
+    Check pods 
+      command: $  kubectl get nodes
+
+
+
+
+
+## Terminate after project
+1. Delete the cluster
+      Command: $  eksctl delete cluster projectDeployEKS  --region=us-east-2
+2. Stop local container
+    Get running <container ID>
+      Command: $  docker ps
+    Stop Container
+      Command: $  docker stop <container ID>
+3.  Delete JWTsecret from AWS
+      command: $  aws ssm delete-parameter --name JWT_SECRET
