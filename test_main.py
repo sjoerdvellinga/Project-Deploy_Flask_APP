@@ -47,11 +47,6 @@ def test_auth(client):
     token = response.json['token']
     assert token is not None
 
-#def test_next(client):
-#    response = client.get('/next')
-#    assert response.status_code == 200
-#    assert response.myJSON == '{"What is on your mind?": "Looking forward to start with the Final Project ;-)"}'
-
 class TestApp(unittest.TestCase):
     def setUp(self):
         self.app = app.test_client()
