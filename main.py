@@ -2,11 +2,13 @@
 """
 A simple app to create a JWT token.
 """
+import json
 import os
 import logging
 import datetime
 import functools
 import jwt
+import json
 
 # pylint: disable=import-error
 from flask import Flask, jsonify, request, abort
@@ -62,11 +64,11 @@ def health():
 
 @APP.route('/next', methods=['POST', 'GET'])
 def next():
-    var field = "my_field_name"
-    var obj = {}
-    obj[field] = "Hello, World!"
-    var myJSON = JSON.stringify(obj)
-    return myJSON
+    field = "What is on your mind?"
+    obj = {}
+    obj[field] = "Looking forward to start with the Final Project ;-)"
+    myJSON = json.dumps(obj)
+    return (myJSON)
 
 @APP.route('/auth', methods=['POST'])
 def auth():
