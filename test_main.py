@@ -3,9 +3,8 @@ Tests for jwt flask app.
 '''
 import os
 import json
-import pytest
+# import pytest
 import unittest
-
 import main
 
 SECRET = 'TestSecret'

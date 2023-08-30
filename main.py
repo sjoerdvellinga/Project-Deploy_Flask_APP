@@ -2,7 +2,6 @@
 """
 A simple app to create a JWT token.
 """
-import json
 import os
 import logging
 import datetime
@@ -63,10 +62,10 @@ def health():
     return jsonify("Still healthy ;-)")
 
 @APP.route('/next', methods=['POST', 'GET'])
-def next():
+def next_route():               # next_route() instead of next() to avoid confusion with next() statement
     field = "What is on your mind?"
     obj = {}
-    obj[field] = "Looking forward to start with the Final Project ;-)"
+    obj[field] = "Looking forward to start with the Final Project"
     myJSON = json.dumps(obj)
     return (myJSON)
 
