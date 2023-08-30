@@ -15,7 +15,7 @@ from flask import Flask, jsonify, request, abort
 JWT_SECRET = os.environ.get('JWT_SECRET', 'abc123abc1234')
 LOG_LEVEL = os.environ.get('LOG_LEVEL', 'INFO')
 
-NEXT = 'Up to the final project |o|  |o|'
+var NEXT = 'Up to the final project |o|  |o|'
 MOOD = 'Looking forward to complete this Nanodegree'
 
 def _logger():
@@ -65,8 +65,14 @@ def health():
 
 @APP.route('/next', methods=['POST', 'GET'])
 def next():
-    return jsonify('What is next?': NEXT,
-            'What is in your mind?': MOOD)
+    var NEXT = "what is on your mind?"
+    var obj = {}
+    obj[NEXT] = `MOOD`
+    var myJSON = JSON.stringify(obj)
+
+
+#    return jsonify({'What is next?': NEXT,
+#            'What is in your mind?': MOOD})
 
 
 @APP.route('/auth', methods=['POST'])
