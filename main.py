@@ -8,9 +8,11 @@ import datetime
 import functools
 import jwt
 import json
+import datetime
 
 # pylint: disable=import-error
 from flask import Flask, jsonify, request, abort
+
 
 
 JWT_SECRET = os.environ.get('JWT_SECRET', 'abc123abc1234')
@@ -61,11 +63,12 @@ def require_jwt(function):
 def health():
     return jsonify("Still healthy ;-)")
 
-@APP.route('/next', methods=['POST', 'GET'])
-def next_route():
-    field = "What is on your mind?"
-    obj = {field: "Looking forward to start with the Final Project ;-)"}
-    return jsonify(obj)
+@app.route('/me' methods=['POST', 'GET']))
+def get_app_info():
+    current_time = datetime.datetime.now()
+    elapsed_time = current_time - start_time
+    app_name = "Udacity CloudFormation App"
+    return f"App Name: {app_name}<br>App Age: {elapsed_time}"
 
 @APP.route('/auth', methods=['POST'])
 def auth():

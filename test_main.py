@@ -6,6 +6,7 @@ import json
 import pytest
 import unittest
 import main
+import datetime
 
 from flask import Flask
 import pytest
@@ -47,19 +48,25 @@ def test_auth(client):
     token = response.json['token']
     assert token is not None
 
-
 class TestApp(unittest.TestCase):
-    def setUp(self):
-        self.app = app.test_client()
 
-    def test_next_route(self):
-        response = self.app.get('/next')
-        print(response.data)  # Add this line to print the response data
-        data = json.loads(response.data)
-        expected_data = {
-            '{"What is on your mind?":"Looking forward to start with the Final Project ;-)"}'
-        }
-        self.assertDictEqual(data, expected_data)
-        
+    def setUp(self):
+        self.app = Flask(__name__)
+        self.client = self.app.test_client()
+        self.start_time = datetime.datetime.now()
+
+        @self.app.route('/me')
+        def get_app_info():
+            current_time = datetime.datetime.now()
+            elapsed_time = current_time - self.start_time
+            app_name = "Udacity CloudFormation App"
+            return f"App Name: {app_name}<br>App Age: {elapsed_time}"
+
+    def test_app_info_endpoint(self):
+        response = self.client.get('/')
+        self.assertEqual(response.status_code, 200)
+        expected_response = f"App Name: Udacity CloudFormation App<br>App Age: {datetime.datetime.now() - self.start_time}"
+        self.assertEqual(response.data.decode('utf-8'), expected_response)
+
 if __name__ == '__main__':
     unittest.main()
