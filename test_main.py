@@ -51,7 +51,7 @@ def test_auth(client):
 class TestApp(unittest.TestCase):
 
     def setUp(self):
-        self.client = app.test_client()
+        self.client = APP.test_client()
         self.start_time = datetime.datetime.now()
 
     @patch('main.datetime')
