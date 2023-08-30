@@ -47,7 +47,7 @@ def test_auth(client):
     token = response.json['token']
     assert token is not None
 
-'''
+
 class TestApp(unittest.TestCase):
     def setUp(self):
         self.app = app.test_client()
@@ -57,10 +57,9 @@ class TestApp(unittest.TestCase):
         print(response.data)  # Add this line to print the response data
         data = json.loads(response.data)
         expected_data = {
-            "What is on your mind?": "Looking forward to start with the Final Project ;-)"
+            '{"What is on your mind?":"Looking forward to start with the Final Project ;-)"}'
         }
         self.assertDictEqual(data, expected_data)
         
 if __name__ == '__main__':
     unittest.main()
-'''
