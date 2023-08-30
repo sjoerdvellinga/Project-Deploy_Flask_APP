@@ -42,12 +42,7 @@ def test_auth(client):
     assert token is not None
 
 def test_next(client):
-    body = {'What is next?': NEXT,
-            'What is in your mind?': MOOD}
-    response = client.post('/next', 
-                           data=json.dumps(body),
-                           content_type='application/json')
-
+    response = client.get('/next')
     assert response.status_code == 200
-    token = response.json['token']
-    assert token is not None
+    assert response.json == {'What is next?': NEXT,
+            'What is in your mind?': MOOD}
