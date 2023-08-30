@@ -62,12 +62,10 @@ def health():
     return jsonify("Still healthy ;-)")
 
 @APP.route('/next', methods=['POST', 'GET'])
-def next_route():               # next_route() instead of next() to avoid confusion with next() statement
+def next_route():
     field = "What is on your mind?"
-    obj = {}
-    obj[field] = "Looking forward to start with the Final Project ;-)"
-    myJSON = json.dumps(obj)
-    return (myJSON)
+    obj = {field: "Looking forward to start with the Final Project ;-)"}
+    return jsonify(obj)
 
 @APP.route('/auth', methods=['POST'])
 def auth():
