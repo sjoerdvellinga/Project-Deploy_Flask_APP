@@ -9,8 +9,8 @@ import main
 import datetime
 
 from flask import Flask
-import pytest
 from main import APP
+from unittest.mock import patch, MagicMock
 
 app = Flask(__name__)
 
