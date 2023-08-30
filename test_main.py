@@ -53,11 +53,12 @@ class TestApp(unittest.TestCase):
 
     def test_next_route(self):
         response = self.app.get('/next')
+        print(response.data)  # Add this line to print the response data
         data = json.loads(response.data)
         expected_data = {
             "What is on your mind?": "Looking forward to start with the Final Project ;-)"
         }
         self.assertDictEqual(data, expected_data)
-
+        
 if __name__ == '__main__':
     unittest.main()
