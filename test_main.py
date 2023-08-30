@@ -10,7 +10,7 @@ import datetime
 
 from flask import Flask
 import pytest
-from main import APP
+from main import app
 
 app = Flask(__name__)
 

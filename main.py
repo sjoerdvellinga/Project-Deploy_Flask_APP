@@ -63,7 +63,7 @@ def require_jwt(function):
 def health():
     return jsonify("Still healthy ;-)")
 
-@app.route('/me', methods=['POST', 'GET'])
+@APP.route('/me', methods=['POST', 'GET'])
 def get_app_info():
     current_time = datetime.datetime.now()
     elapsed_time = current_time - start_time
