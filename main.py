@@ -65,7 +65,7 @@ def health():
 def next_route():               # next_route() instead of next() to avoid confusion with next() statement
     field = "What is on your mind?"
     obj = {}
-    obj[field] = "Looking forward to start with the Final Project"
+    obj[field] = "Looking forward to start with the Final Project ;-)"
     myJSON = json.dumps(obj)
     return (myJSON)
 
