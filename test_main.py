@@ -63,7 +63,7 @@ class TestApp(unittest.TestCase):
             return f"App Name: {app_name}<br>App Age: {elapsed_time}"
 
     def test_app_info_endpoint(self):
-        response = self.client.get('/')
+        response = self.client.get('/me')
         self.assertEqual(response.status_code, 200)
         expected_response = f"App Name: Udacity CloudFormation App<br>App Age: {datetime.datetime.now() - self.start_time}"
         self.assertEqual(response.data.decode('utf-8'), expected_response)
