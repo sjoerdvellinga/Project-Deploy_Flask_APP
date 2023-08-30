@@ -62,7 +62,7 @@ class TestApp(unittest.TestCase):
         expected_data = {
             "What is on your mind?": "Looking forward to start with the Final Project ;-)"
         }
-        self.assertEqual(data, expected_data)
+        self.assertDictEqual(data, expected_data)
 
 if __name__ == '__main__':
     unittest.main()
