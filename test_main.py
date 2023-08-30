@@ -51,21 +51,17 @@ def test_auth(client):
 class TestApp(unittest.TestCase):
 
     def setUp(self):
-        self.app = Flask(__name__)
-        self.client = self.app.test_client()
+        self.client = app.test_client()
         self.start_time = datetime.datetime.now()
 
-        @self.app.route('/me')
-        def get_app_info():
-            current_time = datetime.datetime.now()
-            elapsed_time = current_time - self.start_time
-            app_name = "Udacity CloudFormation App"
-            return f"App Name: {app_name}<br>App Age: {elapsed_time}"
+    @patch('main.datetime')
+    def test_app_info_endpoint(self, mock_datetime):
+        mock_now = MagicMock(return_value=self.start_time)
+        mock_datetime.datetime.now = mock_now
 
-    def test_app_info_endpoint(self):
         response = self.client.get('/me')
         self.assertEqual(response.status_code, 200)
-        expected_response = f"App Name: Udacity CloudFormation App<br>App Age: {datetime.datetime.now() - self.start_time}"
+        expected_response = f"App Name: Udacity CloudFormation App<br>App Age: 0:00:00"
         self.assertEqual(response.data.decode('utf-8'), expected_response)
 
 if __name__ == '__main__':
