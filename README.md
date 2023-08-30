@@ -102,7 +102,7 @@ For more detail about each of these steps, see the project lesson.
 
 ## Launch
 1. Create an EKS Cluster
-      command: $  eksctl create cluster --name projectDeployEKS --nodes=2 --version=1.27 --instance-types=t2.micro --region=us-east-2
+      command: $  eksctl create cluster --name projectDeployEKS --nodes=2 --version=1.27 --instance-types=t2.medium --region=us-east-2
 2. Create a stack
       command: $  aws cloudformation create-stack  --stack-name deployEksCodeBuild --region us-east-1 --template-body file://ci-cd-codepipeline.cfn.yml --parameters ParameterKey=GitHubToken,ParameterValue=<YOUR_GITHUB_TOKEN>
 
