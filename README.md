@@ -4,11 +4,14 @@ This is the project starter repo for the course Server Deployment, Containerizat
 
 In this project you will containerize and deploy a Flask API to a Kubernetes cluster using Docker, AWS EKS, CodePipeline, and CodeBuild.
 
+The URL to access this app is: http://a2ad2651a34104216acec007c697b443-234112474.us-east-2.elb.amazonaws.com/
+
 The Flask app that will be used for this project consists of a simple API with three endpoints:
 
-- `GET '/'`: This is a simple health check, which returns the response 'Healthy'. 
+- `GET '/'`: This is a simple health check, which returns the response 'Still Healthy!'. 
 - `POST '/auth'`: This takes a email and password as json arguments and returns a JWT based on a custom secret.
 - `GET '/contents'`: This requires a valid JWT, and returns the un-encrpyted contents of that token. 
+- 'GET '/next': This is a simple JSON code, which returns the response '{"What is on your mind?": "Looking forward to start with the Final Project ;-)"}'
 
 The app relies on a secret set as the environment variable `JWT_SECRET` to produce a JWT. The built-in Flask server is adequate for local development, but not production, so you will be using the production-ready [Gunicorn](https://gunicorn.org/) server when deploying the app.
 
@@ -62,15 +65,15 @@ cd cd0157-Server-Deployment-and-Containerization/
 .
 ├── Dockerfile 
 ├── README.md
-├── aws-auth-patch.yml #ToDo
-├── buildspec.yml      #ToDo
-├── ci-cd-codepipeline.cfn.yml #ToDo
-├── iam-role-policy.json  #ToDo
+├── aws-auth-patch.yml
+├── buildspec.yml
+├── ci-cd-codepipeline.cfn.yml
+├── iam-role-policy.json
 ├── main.py
 ├── requirements.txt
 ├── simple_jwt_api.yml
-├── test_main.py  #ToDo
-└── trust.json     #ToDo 
+├── test_main.py
+└── trust.json 
 ```
 
      
@@ -87,15 +90,17 @@ Completing the project involves several steps:
 
 For more detail about each of these steps, see the project lesson.
 
-## Prerequisites
+## Prerequisites to boot the app
 1.  Attach policy to IAM role
-      command: $  aws iam put-role-policy --role-name projectCodeBuildRole --policy-name eks-describe --policy-document file://iam-role-policy.json
+      $  aws iam put-role-policy --role-name projectCodeBuildRole --policy-name eks-describe --policy-document file://iam-role-policy.json
 2.  Check Authorization
-      command: $  kubectl get -n kube-system configmap/aws-auth -o yaml > /tmp/aws-auth-patch.yml
+      $  kubectl get -n kube-system configmap/aws-auth -o yaml > /tmp/aws-auth-patch.yml
       Open in VS Code:
-        command: $  code /System/Volumes/Data/private/tmp/aws-auth-patch.yml
+        $  code /System/Volumes/Data/private/tmp/aws-auth-patch.yml
         Result shall include:
-          rolearn: arn:aws:iam::<ACCOUNT ID>:role/eksctl-projectDeployEKS-nodegroup-NodeInstanceRole-1LQA157O81MN2 
+          rolearn: arn:aws:iam::<ACCOUNT ID>:role/eksctl-projectDeployEKS-nodegroup-NodeInstanceRole-1LQA157O81MN2
+        If this result is not included in the response, add a group in the aws-auth-patch and push it to AWS
+          put command: $  aws iam put-role-policy --role-name UdacityFlaskDeployCBKubectlRole --policy-name eks-describe --policy-document file://iam-role-policy.json
 3.  Save JWTsecret in AWS
       command: $  aws ssm put-parameter --name JWT_SECRET --overwrite --value "myjwtsecret" --type SecureString
       Verify command: aws ssm get-parameter --name JWT_SECRET
@@ -104,7 +109,7 @@ For more detail about each of these steps, see the project lesson.
 1. Create an EKS Cluster
       command: $  eksctl create cluster --name projectDeployEKS --nodes=2 --version=1.27 --instance-types=t2.medium --region=us-east-2
 2. Create a stack
-      command: $  aws cloudformation create-stack  --stack-name deployEksCodeBuild --region us-east-1 --template-body file://ci-cd-codepipeline.cfn.yml --parameters ParameterKey=GitHubToken,ParameterValue=<YOUR_GITHUB_TOKEN>
+      command: $  aws cloudformation create-stack  --stack-name deployEksCodeBuild --region us-east-1 --template-body file://ci-cd-codepipeline.cfn.yml --parameters ParameterKey=GitHubToken,ParameterValue=<GITHUB_TOKEN>
 
 
 2. Health Check
