@@ -27,7 +27,7 @@ def client():
 def test_health(client):
     response = client.get('/')
     assert response.status_code == 200
-    assert response.json == 'Still healthy!'
+    assert response.json == 'Still healthy ;-)'
 
 
 def test_auth(client):
@@ -44,4 +44,4 @@ def test_auth(client):
 def test_next(client):
     response = client.get('/next')
     assert response.status_code == 200
-    assert response.json == {"What is on your mind?": "Looking forward to start with the Final Project ;-)"}
+    assert response.json == '{"What is on your mind?": "Looking forward to start with the Final Project ;-)"}'
