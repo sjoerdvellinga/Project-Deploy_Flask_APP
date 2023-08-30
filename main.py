@@ -60,6 +60,14 @@ def require_jwt(function):
 def health():
     return jsonify("Still healthy ;-)")
 
+@APP.route('/next', methods=['POST', 'GET'])
+def next():
+    var field = "my_field_name"
+    var obj = {}
+    obj[field] = "Hello, World!"
+    var myJSON = JSON.stringify(obj)
+    return myJSON
+
 @APP.route('/auth', methods=['POST'])
 def auth():
     """
