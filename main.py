@@ -65,8 +65,8 @@ def health():
 
 @APP.route('/next', methods=['POST', 'GET'])
 def next():
-    return jsonify({'What is next?': NEXT,
-            'What is in your mind?': MOOD})
+    return jsonify('What is next?': NEXT,
+            'What is in your mind?': MOOD)
 
 
 @APP.route('/auth', methods=['POST'])
