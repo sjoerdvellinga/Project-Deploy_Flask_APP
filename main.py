@@ -15,6 +15,8 @@ from flask import Flask, jsonify, request, abort
 JWT_SECRET = os.environ.get('JWT_SECRET', 'abc123abc1234')
 LOG_LEVEL = os.environ.get('LOG_LEVEL', 'INFO')
 
+NEXT = 'Up to the final project |o|  |o|'
+MOOD = 'Looking forward to complete this Nanodegree'
 
 def _logger():
     '''
@@ -59,7 +61,12 @@ def require_jwt(function):
 
 @APP.route('/', methods=['POST', 'GET'])
 def health():
-    return jsonify("Healthy")
+    return jsonify("Still healthy ;-)")
+
+@APP.route('/next', methods=['POST', 'GET'])
+def next():
+    return jsonify({'What is next?': NEXT,
+            'What is in your mind?': MOOD})
 
 
 @APP.route('/auth', methods=['POST'])
