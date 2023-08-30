@@ -9,7 +9,7 @@ import main
 import datetime
 
 from flask import Flask
-from main import APP
+from main import APP, start_time
 from unittest.mock import patch, MagicMock
 
 app = Flask(__name__)
@@ -52,11 +52,11 @@ class TestApp(unittest.TestCase):
 
     def setUp(self):
         self.client = APP.test_client()
-        self.start_time = datetime.datetime.now()
+        
 
     @patch('main.datetime')
     def test_app_info_endpoint(self, mock_datetime):
-        mock_now = MagicMock(return_value=self.start_time)
+        mock_now = MagicMock(return_value=start_time)
         mock_datetime.datetime.now = mock_now
 
         response = self.client.get('/me')

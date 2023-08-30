@@ -13,7 +13,7 @@ import datetime
 # pylint: disable=import-error
 from flask import Flask, jsonify, request, abort
 
-
+start_time = datetime.datetime(2023, 8, 30, 18, 00)
 
 JWT_SECRET = os.environ.get('JWT_SECRET', 'abc123abc1234')
 LOG_LEVEL = os.environ.get('LOG_LEVEL', 'INFO')
