@@ -2,22 +2,63 @@
 
 This is the project starter repo for the course Server Deployment, Containerization, and Testing.
 
-In this project you will containerize and deploy a Flask API to a Kubernetes cluster using Docker, AWS EKS, CodePipeline, and CodeBuild.
-
 The URL to access this app is: http://a2ad2651a34104216acec007c697b443-234112474.us-east-2.elb.amazonaws.com/
 
-The Flask app that will be used for this project consists of a simple API with three endpoints:
+The Flask app that will be used for this project consists of a simple API with four endpoints:
 
 - `GET '/'`: This is a simple health check, which returns the response 'Still Healthy!'. 
 - `POST '/auth'`: This takes a email and password as json arguments and returns a JWT based on a custom secret.
 - `GET '/contents'`: This requires a valid JWT, and returns the un-encrpyted contents of that token. 
-- 'GET '/next': This is a simple JSON code, which returns the response '{"What is on your mind?": "Looking forward to start with the Final Project ;-)"}'
+- `GET '/me'`: This is a simple JSON code, which returns the response 'with the app name and it's age since it was pushed into the pipeline.
 
 The app relies on a secret set as the environment variable `JWT_SECRET` to produce a JWT. The built-in Flask server is adequate for local development, but not production, so you will be using the production-ready [Gunicorn](https://gunicorn.org/) server when deploying the app.
 
 
+## Prerequisites to boot the app
+1.  Attach policy to IAM role
+      $  aws iam put-role-policy --role-name projectCodeBuildRole --policy-name eks-describe --policy-document file://iam-role-policy.json
+2.  Check Authorization
+      $  kubectl get -n kube-system configmap/aws-auth -o yaml > /tmp/aws-auth-patch.yml
+      Open in VS Code:
+        $  code /System/Volumes/Data/private/tmp/aws-auth-patch.yml
+        Result shall include:
+          rolearn: arn:aws:iam::<ACCOUNT ID>:role/eksctl-projectDeployEKS-nodegroup-NodeInstanceRole-1LQA157O81MN2
+        If this result is not included in the response, add a group in the aws-auth-patch and push it to AWS
+          put command: $  aws iam put-role-policy --role-name UdacityFlaskDeployCBKubectlRole --policy-name eks-describe --policy-document file://iam-role-policy.json
+3.  Save JWTsecret in AWS
+      command: $  aws ssm put-parameter --name JWT_SECRET --overwrite --value "myjwtsecret" --type SecureString
+      Verify command: aws ssm get-parameter --name JWT_SECRET
 
-## Prerequisites
+## Launch
+1. Create an EKS Cluster
+      command: $  eksctl create cluster --name projectDeployEKS --nodes=2 --version=1.27 --instance-types=t2.medium --region=us-east-2
+2. Create a stack
+      command: $  aws cloudformation create-stack  --stack-name deployEksCodeBuild --region us-east-1 --template-body file://ci-cd-codepipeline.cfn.yml --parameters ParameterKey=GitHubToken,ParameterValue=<GITHUB_TOKEN>
+2. Health Check
+    Check createed Cluster
+      command: $  eksctl get cluster --name=projectDeployEKS --region=us-east-2 
+      alternative command: $  eksctl utils describe-stacks --region=us-east-2 --cluster=projectDeployEKS 
+    Check created stacks
+      cmmand: $  aws cloudformation list-stacks
+    Check pods 
+      command: $  kubectl get nodes
+
+
+## Termination after the project
+1. Delete the cluster
+      Command: $  eksctl delete cluster projectDeployEKS  --region=us-east-2
+2. Stop local container
+    Get running <container ID>
+      Command: $  docker ps
+    Stop Container
+      Command: $  docker stop <container ID>
+3.  Delete JWTsecret from AWS
+      command: $  aws ssm delete-parameter --name JWT_SECRET
+
+
+
+
+## Project Prerequisites given by Udacity
 
 * Docker Desktop - Installation instructions for all OSes can be found <a href="https://docs.docker.com/install/" target="_blank">here</a>.
 * Git: <a href="https://git-scm.com/downloads" target="_blank">Download and install Git</a> for your system. 
@@ -79,7 +120,7 @@ cd cd0157-Server-Deployment-and-Containerization/
      
 ## Project Steps
 
-Completing the project involves several steps:
+Completing the project involved the following steps:
 
 1. Write a Dockerfile for a simple Flask API
 2. Build and test the container locally
@@ -87,51 +128,3 @@ Completing the project involves several steps:
 4. Store a secret using AWS Parameter Store
 5. Create a CodePipeline pipeline triggered by GitHub checkins
 6. Create a CodeBuild stage which will build, test, and deploy your code
-
-For more detail about each of these steps, see the project lesson.
-
-## Prerequisites to boot the app
-1.  Attach policy to IAM role
-      $  aws iam put-role-policy --role-name projectCodeBuildRole --policy-name eks-describe --policy-document file://iam-role-policy.json
-2.  Check Authorization
-      $  kubectl get -n kube-system configmap/aws-auth -o yaml > /tmp/aws-auth-patch.yml
-      Open in VS Code:
-        $  code /System/Volumes/Data/private/tmp/aws-auth-patch.yml
-        Result shall include:
-          rolearn: arn:aws:iam::<ACCOUNT ID>:role/eksctl-projectDeployEKS-nodegroup-NodeInstanceRole-1LQA157O81MN2
-        If this result is not included in the response, add a group in the aws-auth-patch and push it to AWS
-          put command: $  aws iam put-role-policy --role-name UdacityFlaskDeployCBKubectlRole --policy-name eks-describe --policy-document file://iam-role-policy.json
-3.  Save JWTsecret in AWS
-      command: $  aws ssm put-parameter --name JWT_SECRET --overwrite --value "myjwtsecret" --type SecureString
-      Verify command: aws ssm get-parameter --name JWT_SECRET
-
-## Launch
-1. Create an EKS Cluster
-      command: $  eksctl create cluster --name projectDeployEKS --nodes=2 --version=1.27 --instance-types=t2.medium --region=us-east-2
-2. Create a stack
-      command: $  aws cloudformation create-stack  --stack-name deployEksCodeBuild --region us-east-1 --template-body file://ci-cd-codepipeline.cfn.yml --parameters ParameterKey=GitHubToken,ParameterValue=<GITHUB_TOKEN>
-
-
-2. Health Check
-    Check createed Cluster
-      command: $  eksctl get cluster --name=projectDeployEKS --region=us-east-2 
-      alternative command: $  eksctl utils describe-stacks --region=us-east-2 --cluster=projectDeployEKS 
-    Check created stacks
-      cmmand: $  aws cloudformation list-stacks
-    Check pods 
-      command: $  kubectl get nodes
-
-
-
-
-
-## Terminate after project
-1. Delete the cluster
-      Command: $  eksctl delete cluster projectDeployEKS  --region=us-east-2
-2. Stop local container
-    Get running <container ID>
-      Command: $  docker ps
-    Stop Container
-      Command: $  docker stop <container ID>
-3.  Delete JWTsecret from AWS
-      command: $  aws ssm delete-parameter --name JWT_SECRET
